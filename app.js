@@ -10,7 +10,8 @@ const state = {
   tone: "all"
 };
 
-const HUE_ZL_STEP_PERCENT = 0.46;
+const HUE_RIGHT_EDGE_PERCENT = 98.1;
+const HUE_ZL_STEP_PERCENT = 0.486;
 
 const els = {
   totalCount: document.getElementById("totalCount"),
@@ -228,7 +229,7 @@ function rgbToCss(rgb) {
 
 function getZlPressesFromRight(color) {
   const huePercent = numeric(color.game_hue_x_pct);
-  return Math.max(0, Math.round((100 - huePercent) / HUE_ZL_STEP_PERCENT));
+  return Math.max(0, Math.round((HUE_RIGHT_EDGE_PERCENT - huePercent) / HUE_ZL_STEP_PERCENT));
 }
 
 function getCompareMetrics(a, b) {
