@@ -10,6 +10,8 @@ const state = {
   tone: "all"
 };
 
+const HUE_ZL_STEP_PERCENT = 0.46;
+
 const els = {
   totalCount: document.getElementById("totalCount"),
   resultCount: document.getElementById("resultCount"),
@@ -172,6 +174,10 @@ function renderInspector() {
         <span>上方色盘</span>
         <strong>X ${color.game_palette_x_pct_colorcraftlab}% / Y ${color.game_palette_y_pct_colorcraftlab}%</strong>
       </div>
+      <div class="meta-item">
+        <span>色相条按键</span>
+        <strong>从最右按 ZL 约 ${getZlPressesFromRight(color)} 次</strong>
+      </div>
     </div>
 
     <img class="position-image" src="${color.imagePath}" alt="${color.code} 游戏色盘位置图">
@@ -220,6 +226,11 @@ function rgbToCss(rgb) {
   return `rgb(${rgb.r}, ${rgb.g}, ${rgb.b})`;
 }
 
+function getZlPressesFromRight(color) {
+  const huePercent = numeric(color.game_hue_x_pct);
+  return Math.max(0, Math.round((100 - huePercent) / HUE_ZL_STEP_PERCENT));
+}
+
 function getCompareMetrics(a, b) {
   const ax = numeric(a.game_palette_x_pct_colorcraftlab);
   const ay = numeric(a.game_palette_y_pct_colorcraftlab);
@@ -240,6 +251,7 @@ function getCompareMetrics(a, b) {
     dx: bx - ax,
     dy: by - ay,
     dh: hueWrapped,
+    dzl: getZlPressesFromRight(b) - getZlPressesFromRight(a),
     rawHueDelta: hueDirect,
     rgbDistance
   };
@@ -377,6 +389,7 @@ function drawCompareCanvas(a, b, metrics) {
   ctx.font = "18px Arial";
   const lines = [
     describeDelta(metrics.dh, "色相条"),
+    `ZL 次数变化：${metrics.dzl > 0 ? "+" : ""}${metrics.dzl} 次`,
     describeDelta(metrics.dx, "X"),
     describeDelta(metrics.dy, "Y"),
     getHueMoveLabel(metrics.dh)
@@ -414,6 +427,7 @@ function renderCompare() {
   `).join("");
   els.compareDirections.innerHTML = [
     ["色相条", describeDelta(metrics.dh, "色相条")],
+    ["ZL 次数", `${a.code} 约 ${getZlPressesFromRight(a)} 次，${b.code} 约 ${getZlPressesFromRight(b)} 次`],
     ["上方 X", describeDelta(metrics.dx, "X")],
     ["上方 Y", describeDelta(metrics.dy, "Y")]
   ].map(([label, text]) => `
@@ -425,6 +439,7 @@ function renderCompare() {
   els.compareTable.innerHTML = `
     <div class="compare-row head"><span>项目</span><span>${a.code}</span><span>${b.code}</span><span>B - A</span></div>
     <div class="compare-row"><span>底部色相条</span><span>${a.game_hue_x_pct}%</span><span>${b.game_hue_x_pct}%</span><strong>${metrics.dh.toFixed(1)}%</strong></div>
+    <div class="compare-row"><span>从最右按 ZL</span><span>约 ${getZlPressesFromRight(a)} 次</span><span>约 ${getZlPressesFromRight(b)} 次</span><strong>${metrics.dzl > 0 ? "+" : ""}${metrics.dzl} 次</strong></div>
     <div class="compare-row"><span>色盘 X</span><span>${a.game_palette_x_pct_colorcraftlab}%</span><span>${b.game_palette_x_pct_colorcraftlab}%</span><strong>${metrics.dx.toFixed(1)}%</strong></div>
     <div class="compare-row"><span>色盘 Y</span><span>${a.game_palette_y_pct_colorcraftlab}%</span><span>${b.game_palette_y_pct_colorcraftlab}%</span><strong>${metrics.dy.toFixed(1)}%</strong></div>
     <div class="compare-row"><span>HSV</span><span>${a.hsv_h}°, ${a.hsv_s}%, ${a.hsv_v}%</span><span>${b.hsv_h}°, ${b.hsv_s}%, ${b.hsv_v}%</span><strong>RGB 距离 ${metrics.rgbDistance.toFixed(1)}</strong></div>

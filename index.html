@@ -177,6 +177,10 @@
           <pre><code>Hue bar = ((360 - HSV_H) % 360) / 360
 Square X = HSV_S * 0.78 + HSL_S * 0.22
 Square Y = 100 - (HSV_V * 0.68 + HSL_L * 0.32)</code></pre>
+
+          <h3>ZL 步长参考</h3>
+          <p>根据 00 到 04 的实测截图，底部滑块从最右端开始，每按一次 ZL 约向左移动 0.46% 的色相条长度。因此色卡详情里的“从最右按 ZL 约 N 次”可作为快速定位色相条的参考。</p>
+          <pre><code>ZL 次数 = round((100 - Hue bar percent) / 0.46)</code></pre>
         </div>
       </section>
 
