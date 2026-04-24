@@ -178,6 +178,10 @@
 Square X = HSV_S * 0.78 + HSL_S * 0.22
 Square Y = 100 - (HSV_V * 0.68 + HSL_L * 0.32)</code></pre>
 
+          <h3>校正方法</h3>
+          <p>初始位置先由色块的 RGB/HSV 数值换算得到；随后在游戏中逐一选取与原拼豆色块视觉上最接近的颜色，记录实际色盘落点，并与初始 HSV 落点对比。最终色盘图会优先采用这些实测位置，用来修正单纯数学换算带来的偏差。</p>
+          <p>本项目的色块显示与人工比对环境为 MacBook Pro 2022，显示器颜色描述文件使用系统内建的“彩色 LCD”。不同设备、屏幕亮度或色彩模式下，观感可能略有差异。</p>
+
           <h3>ZL 步长参考</h3>
           <p>根据 00 到 04 与 A6 的实测截图，滑块最右可达位置约为色相条 98.1%，每按一次 ZL 约向左移动 0.486%。因此色卡详情里的“从最右按 ZL 约 N 次”可作为快速定位色相条的参考。</p>
           <pre><code>ZL 次数 = round((98.1 - Hue bar percent) / 0.486)</code></pre>
@@ -187,8 +191,10 @@ Square Y = 100 - (HSV_V * 0.68 + HSL_L * 0.32)</code></pre>
       <section class="view" data-panel="about">
         <div class="content-panel panel">
           <h3>参考来源</h3>
-          <p>本站的色盘定位逻辑参考了 ColorCraftLab 的公开网页实现，并使用本地生成的定位图方便逐色号查看。</p>
+          <p>本站的色盘定位逻辑参考了 ColorCraftLab 的公开网页实现，并结合实际游戏截图重新校正部分色号位置，生成便于逐色号查看的定位图。</p>
           <p><a href="https://heheann.github.io/colorcraftlab/" target="_blank" rel="noreferrer">https://heheann.github.io/colorcraftlab/</a></p>
+          <p>作者：联邦宇宙 Misskey <a href="https://pari.cafe/@freefall" target="_blank" rel="noreferrer">@freefall</a>。如对色彩数据、校正结果或网页内容有疑问，可以通过该账号联系作者。</p>
+          <p>本项目由 Codex 辅助完成资料整理、图像位置分析、色盘图生成与网页实现。</p>
           <p>站点目标仓库：<code>twocloudsinthesky/tomodachi-color-guide</code>。部署方式为 GitHub Pages 静态页面。</p>
         </div>
       </section>
