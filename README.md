@@ -23,15 +23,6 @@ https://twocloudsinthesky.github.io/tomodachi-color-guide/
 https://heheann.github.io/colorcraftlab/
 ```
 
-## 部署到 GitHub Pages
-
-1. 在 GitHub 创建公开仓库：`tomodachi-color-guide`
-2. 把本文件夹内所有文件上传到仓库根目录
-3. 进入仓库 `Settings` -> `Pages`
-4. `Build and deployment` 选择 `Deploy from a branch`
-5. Branch 选择 `main`，目录选择 `/root`
-6. 保存后等待部署完成
-
 ## 本地预览
 
 由于页面使用 `fetch` 读取 CSV，不建议直接双击打开 `index.html`。可以在本目录运行：
