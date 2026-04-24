@@ -1,0 +1,146 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="description" content="人森拼豆色盘对照表：按拼豆色号查看《朋友收集》游戏色盘中的近似定位图。">
+  <meta name="theme-color" content="#f7f0df">
+  <title>人森拼豆色盘对照表</title>
+  <link rel="stylesheet" href="./styles.css">
+</head>
+<body>
+  <div class="app-shell">
+    <aside class="sidebar">
+      <div class="brand">
+        <div class="brand-mark">色</div>
+        <div>
+          <h1>人森拼豆色盘对照表</h1>
+          <p>拼豆 221 色到游戏自订色盘位置</p>
+        </div>
+      </div>
+
+      <nav class="nav" aria-label="主导航">
+        <button class="nav-btn is-active" data-view="palette" type="button">色卡浏览</button>
+        <button class="nav-btn" data-view="guide" type="button">调色说明</button>
+        <button class="nav-btn" data-view="about" type="button">参考来源</button>
+      </nav>
+
+      <div class="sidebar-card">
+        <span>内置色卡</span>
+        <strong id="totalCount">221 色</strong>
+        <p>点击色号即可查看对应色盘落点图。</p>
+      </div>
+    </aside>
+
+    <main class="workspace">
+      <header class="topbar">
+        <div>
+          <p class="eyebrow" id="viewEyebrow">Palette Browser</p>
+          <h2 id="viewTitle">色卡浏览</h2>
+        </div>
+        <div class="topbar-actions">
+          <button id="themeToggle" class="soft-btn" type="button">切换主题</button>
+          <a class="soft-btn" href="https://heheann.github.io/colorcraftlab/" target="_blank" rel="noreferrer">参考网页</a>
+        </div>
+      </header>
+
+      <section class="view is-active" data-panel="palette">
+        <div class="tool-grid">
+          <section class="panel filters-panel">
+            <div class="panel-heading">
+              <div>
+                <h3>查找色号</h3>
+                <p>支持输入色号、HEX 或 RGB 数字。</p>
+              </div>
+              <span class="pill" id="resultCount">加载中</span>
+            </div>
+
+            <div class="filter-row">
+              <input id="searchInput" class="text-input" type="search" placeholder="搜索 A1、D13、#b5038d、181">
+              <select id="groupFilter" class="select-input" aria-label="按分组筛选">
+                <option value="all">全部分组</option>
+                <option value="A">A 区</option>
+                <option value="B">B 区</option>
+                <option value="C">C 区</option>
+                <option value="D">D 区</option>
+                <option value="E">E 区</option>
+                <option value="F">F 区</option>
+                <option value="G">G 区</option>
+                <option value="H">H 区</option>
+                <option value="M">M 区</option>
+              </select>
+              <select id="toneFilter" class="select-input" aria-label="按色系筛选">
+                <option value="all">全部色系</option>
+                <option value="红色">红色</option>
+                <option value="橘色">橘色</option>
+                <option value="黄色">黄色</option>
+                <option value="绿色">绿色</option>
+                <option value="青色">青色</option>
+                <option value="蓝色">蓝色</option>
+                <option value="紫色">紫色</option>
+                <option value="粉色">粉色</option>
+                <option value="灰色">灰色</option>
+                <option value="白色">白色</option>
+                <option value="黑色">黑色</option>
+              </select>
+            </div>
+          </section>
+
+          <section class="palette-layout">
+            <div class="palette-column panel">
+              <div class="panel-heading compact">
+                <div>
+                  <h3>221 色色卡</h3>
+                  <p id="searchSummary">正在读取色卡数据。</p>
+                </div>
+              </div>
+              <div id="paletteGrid" class="palette-grid" aria-live="polite"></div>
+            </div>
+
+            <aside class="inspector panel" id="inspector">
+              <div class="empty-state">选择一个色号后，这里会显示游戏色盘定位图。</div>
+            </aside>
+          </section>
+        </div>
+      </section>
+
+      <section class="view" data-panel="guide">
+        <div class="content-panel panel">
+          <h3>如何在游戏里使用</h3>
+          <div class="steps">
+            <div>
+              <strong>1. 先调底部色相条</strong>
+              <p>查看图片里的 Hue bar 百分比，把游戏底部滑块移动到同一相对位置。</p>
+            </div>
+            <div>
+              <strong>2. 再调上方色盘落点</strong>
+              <p>Square X 是横向位置，越右越鲜艳；Square Y 是从上往下的位置，越下越暗。</p>
+            </div>
+            <div>
+              <strong>3. 灰白黑色优先看明度</strong>
+              <p>低饱和色的色相影响很小，主要把上方落点放在左侧，再调整上下明暗。</p>
+            </div>
+          </div>
+
+          <h3>换算逻辑</h3>
+          <p>底部色相条采用反向 HSV 色相：红、品红、蓝、青、绿、黄、红。上方色盘位置采用 ColorCraftLab 的经验校准，混合 HSV 与 HSL，使位置更接近游戏界面的视觉表现。</p>
+          <pre><code>Hue bar = ((360 - HSV_H) % 360) / 360
+Square X = HSV_S * 0.78 + HSL_S * 0.22
+Square Y = 100 - (HSV_V * 0.68 + HSL_L * 0.32)</code></pre>
+        </div>
+      </section>
+
+      <section class="view" data-panel="about">
+        <div class="content-panel panel">
+          <h3>参考来源</h3>
+          <p>本站的色盘定位逻辑参考了 ColorCraftLab 的公开网页实现，并使用本地生成的定位图方便逐色号查看。</p>
+          <p><a href="https://heheann.github.io/colorcraftlab/" target="_blank" rel="noreferrer">https://heheann.github.io/colorcraftlab/</a></p>
+          <p>站点目标仓库：<code>twocloudsinthesky/tomodachi-color-guide</code>。部署方式为 GitHub Pages 静态页面。</p>
+        </div>
+      </section>
+    </main>
+  </div>
+
+  <script src="./app.js"></script>
+</body>
+</html>
