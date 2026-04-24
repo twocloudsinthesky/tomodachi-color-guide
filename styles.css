@@ -259,7 +259,7 @@ a {
 
 .palette-layout {
   display: grid;
-  grid-template-columns: minmax(0, 1fr) minmax(360px, 38%);
+  grid-template-columns: minmax(300px, 0.74fr) minmax(620px, 1.26fr);
   gap: 18px;
   align-items: start;
 }
@@ -314,7 +314,7 @@ a {
 .inspector {
   position: sticky;
   top: 24px;
-  padding: 18px;
+  padding: 16px;
 }
 
 .inspector-hero {
@@ -372,13 +372,11 @@ a {
 }
 
 .image-actions {
-  display: flex;
-  gap: 10px;
+  display: grid;
   margin-top: 12px;
 }
 
 .image-actions a {
-  flex: 1;
   justify-content: center;
 }
 

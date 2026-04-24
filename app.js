@@ -166,8 +166,7 @@ function renderInspector() {
     <img class="position-image" src="${color.imagePath}" alt="${color.code} 游戏色盘位置图">
 
     <div class="image-actions">
-      <a class="soft-btn" href="${color.imagePath}" target="_blank" rel="noreferrer">打开图片</a>
-      <a class="soft-btn" href="./assets/data/colors.csv" target="_blank" rel="noreferrer">查看 CSV</a>
+      <a class="soft-btn" href="${color.imagePath}" target="_blank" rel="noreferrer">查看大图</a>
     </div>
   `;
 }
