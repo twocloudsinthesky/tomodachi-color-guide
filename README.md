@@ -40,19 +40,9 @@ https://twocloudsinthesky.github.io/tomodachi-color-guide/
 https://heheann.github.io/colorcraftlab/
 ```
 
-作者：联邦宇宙 Misskey [@freefall](https://pari.cafe/@freefall)。如对色彩数据、校正结果或网页内容有疑问，可以通过该账号联系作者。
+作者来自联邦宇宙 Misskey： [@freefall](https://pari.cafe/@freefall)。如对色彩数据、校正结果或网页内容有疑问，可以通过该账号联系作者。
 
-本项目由 Codex 辅助完成资料整理、图像位置分析、色盘图生成与网页实现。
-
-## 本地预览
-
-由于页面使用 `fetch` 读取 CSV，不建议直接双击打开 `index.html`。可以在本目录运行：
-
-```bash
-python3 -m http.server 8080
-```
-
-然后访问：
+**本项目由 Codex 辅助完成资料整理、图像位置分析、色盘图生成与网页实现。**
 
 ```text
 http://localhost:8080
