@@ -44,6 +44,3 @@ https://heheann.github.io/colorcraftlab/
 
 **本项目由 Codex 辅助完成资料整理、图像位置分析、色盘图生成与网页实现。**
 
-```text
-http://localhost:8080
-```
