@@ -21,6 +21,7 @@
 
       <nav class="nav" aria-label="主导航">
         <button class="nav-btn is-active" data-view="palette" type="button">色卡浏览</button>
+        <button class="nav-btn" data-view="compare" type="button">色彩对比</button>
         <button class="nav-btn" data-view="guide" type="button">调色说明</button>
         <button class="nav-btn" data-view="about" type="button">参考来源</button>
       </nav>
@@ -100,6 +101,55 @@
             <aside class="inspector panel" id="inspector">
               <div class="empty-state">选择一个色号后，这里会显示游戏色盘定位图。</div>
             </aside>
+          </section>
+        </div>
+      </section>
+
+      <section class="view" data-panel="compare">
+        <div class="compare-grid">
+          <section class="panel compare-controls">
+            <div class="panel-heading">
+              <div>
+                <h3>选择两个色号</h3>
+                <p>对比色相条、上方色盘坐标和实际色块差异。</p>
+              </div>
+              <span class="pill" id="compareToneHint">A1 / A2</span>
+            </div>
+
+            <div class="compare-selects">
+              <label class="select-card">
+                <span>颜色 A</span>
+                <select id="compareASelect" class="select-input"></select>
+              </label>
+              <button id="swapCompareButton" class="soft-btn swap-btn" type="button">交换</button>
+              <label class="select-card">
+                <span>颜色 B</span>
+                <select id="compareBSelect" class="select-input"></select>
+              </label>
+            </div>
+
+            <div id="compareSwatches" class="compare-swatches"></div>
+          </section>
+
+          <section class="panel compare-visual-panel">
+            <div class="panel-heading compact">
+              <div>
+                <h3>坐标移动方向</h3>
+                <p>从颜色 A 调到颜色 B 时，按箭头和文字移动。</p>
+              </div>
+            </div>
+            <canvas id="compareCanvas" class="compare-canvas" width="960" height="560" aria-label="色彩对比坐标图"></canvas>
+            <div id="compareDirections" class="direction-grid"></div>
+          </section>
+
+          <section class="panel compare-table-panel">
+            <div class="panel-heading compact">
+              <div>
+                <h3>数值差异</h3>
+                <p>百分比越接近，游戏中移动幅度越小。</p>
+              </div>
+            </div>
+            <div id="compareTable" class="compare-table"></div>
           </section>
         </div>
       </section>
