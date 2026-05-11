@@ -422,6 +422,15 @@ body.dark .pill {
   background: #9d7415;
 }
 
+.position-canvas {
+  display: block;
+  width: 100%;
+  max-height: min(60vh, 600px);
+  margin: 0 auto;
+  border-radius: 6px;
+  border: 1px solid var(--line);
+}
+
 .image-actions {
   display: grid;
   margin-top: 10px;

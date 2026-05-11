@@ -181,12 +181,78 @@ function renderInspector() {
       </div>
     </div>
 
-    <img class="position-image" src="${color.imagePath}" alt="${color.code} 游戏色盘位置图">
-
-    <div class="image-actions">
-      <a class="soft-btn" href="${color.imagePath}" target="_blank" rel="noreferrer">查看大图</a>
-    </div>
+    <canvas class="position-canvas" id="inspectorCanvas" width="960" height="480" aria-label="${color.code} 游戏色盘位置图"></canvas>
   `;
+  const posCanvas = document.getElementById("inspectorCanvas");
+  if (posCanvas) drawInspectorCanvas(posCanvas, color);
+}
+
+function drawInspectorCanvas(canvas, color) {
+  const ctx = canvas.getContext("2d");
+  const W = canvas.width;
+  const H = canvas.height;
+  const styles = getComputedStyle(document.body);
+  const borderColor = styles.getPropertyValue("--line").trim() || "rgba(0,0,0,0.18)";
+  const textColor = styles.getPropertyValue("--text").trim() || "#2a173c";
+  const surfaceColor = styles.getPropertyValue("--surface-strong").trim() || "#fffdf8";
+
+  ctx.fillStyle = surfaceColor;
+  ctx.fillRect(0, 0, W, H);
+
+  const pad = 24;
+  const labelH = 22;
+  const hueH = 26;
+  const gap = 10;
+  const fieldX = pad;
+  const fieldY = pad + labelH + gap;
+  const fieldW = W - pad * 2;
+  const fieldH = H - fieldY - gap - hueH - gap - pad;
+  const hueBarY = fieldY + fieldH + gap;
+
+  drawColorField(ctx, fieldX, fieldY, fieldW, fieldH, numeric(color.hsv_h));
+  ctx.strokeStyle = borderColor;
+  ctx.lineWidth = 1;
+  ctx.strokeRect(fieldX, fieldY, fieldW, fieldH);
+
+  drawHueBar(ctx, fieldX, hueBarY, fieldW, hueH);
+  ctx.strokeRect(fieldX, hueBarY, fieldW, hueH);
+
+  const mx = fieldX + numeric(color.game_palette_x_pct_colorcraftlab) / 100 * fieldW;
+  const my = fieldY + numeric(color.game_palette_y_pct_colorcraftlab) / 100 * fieldH;
+  ctx.save();
+  ctx.strokeStyle = "#ffffff";
+  ctx.lineWidth = 3;
+  ctx.beginPath();
+  ctx.arc(mx, my, 10, 0, Math.PI * 2);
+  ctx.stroke();
+  ctx.strokeStyle = "rgba(0,0,0,0.5)";
+  ctx.lineWidth = 1.5;
+  ctx.stroke();
+  ctx.restore();
+
+  const hx = fieldX + numeric(color.game_hue_x_pct) / 100 * fieldW;
+  ctx.save();
+  ctx.fillStyle = color.hex;
+  ctx.strokeStyle = "#ffffff";
+  ctx.lineWidth = 2.5;
+  ctx.beginPath();
+  ctx.arc(hx, hueBarY + hueH / 2, 9, 0, Math.PI * 2);
+  ctx.fill();
+  ctx.stroke();
+  ctx.strokeStyle = "rgba(0,0,0,0.3)";
+  ctx.lineWidth = 1;
+  ctx.stroke();
+  ctx.restore();
+
+  ctx.fillStyle = textColor;
+  ctx.font = "700 13px Inter, Arial, sans-serif";
+  ctx.textAlign = "left";
+  ctx.textBaseline = "middle";
+  ctx.fillText(
+    `${color.code}  上方色盘 X ${color.game_palette_x_pct_colorcraftlab}% / Y ${color.game_palette_y_pct_colorcraftlab}%  色相条 ${color.game_hue_x_pct}%`,
+    fieldX,
+    pad + labelH / 2
+  );
 }
 
 function getColor(code) {
@@ -271,6 +337,32 @@ function getHueMoveLabel(delta) {
   return delta > 0 ? "色相条向右，接近黄/橘方向" : "色相条向左，接近蓝/紫/粉方向";
 }
 
+function drawColorField(ctx, fx, fy, fw, fh, hue) {
+  const imageData = ctx.createImageData(fw, fh);
+  for (let py = 0; py < fh; py++) {
+    for (let px = 0; px < fw; px++) {
+      const sat = px / (fw - 1);
+      const scale = 1 - 0.16 * sat;
+      const val = Math.min(1, (1 - py / (fh - 1)) / scale);
+      const { r, g, b } = hsvToRgb(hue, sat, val);
+      const i = (py * fw + px) * 4;
+      imageData.data[i] = r;
+      imageData.data[i + 1] = g;
+      imageData.data[i + 2] = b;
+      imageData.data[i + 3] = 255;
+    }
+  }
+  ctx.putImageData(imageData, fx, fy);
+}
+
+function drawHueBar(ctx, hx, hy, hw, hh) {
+  for (let px = 0; px < hw; px++) {
+    const hue = (360 - px / (hw - 1) * 360) % 360;
+    ctx.fillStyle = rgbToCss(hsvToRgb(hue, 1, 1));
+    ctx.fillRect(hx + px, hy, 1, hh);
+  }
+}
+
 function drawArrow(ctx, x1, y1, x2, y2, color) {
   const angle = Math.atan2(y2 - y1, x2 - x1);
   const head = 14;
@@ -330,26 +422,7 @@ function drawCompareCanvas(a, b, metrics) {
   const plot = { x: 54, y: 42, w: 620, h: 360 };
   const hue = { x: 54, y: 462, w: 620, h: 34 };
   const hueForField = numeric(a.hsv_h);
-  const field = ctx.createImageData(plot.w, plot.h);
-  for (let py = 0; py < plot.h; py += 1) {
-    for (let px = 0; px < plot.w; px += 1) {
-      const sat = px / (plot.w - 1);
-      const val = 1 - (py / (plot.h - 1));
-      const gray = Math.round(val * 255);
-      const hueRgb = hsvToRgb(hueForField, 0.18 + sat * 0.82, 0.12 + val * 0.88);
-      const rgb = {
-        r: Math.round(gray * (1 - sat) + hueRgb.r * sat),
-        g: Math.round(gray * (1 - sat) + hueRgb.g * sat),
-        b: Math.round(gray * (1 - sat) + hueRgb.b * sat)
-      };
-      const offset = (py * plot.w + px) * 4;
-      field.data[offset] = rgb.r;
-      field.data[offset + 1] = rgb.g;
-      field.data[offset + 2] = rgb.b;
-      field.data[offset + 3] = 255;
-    }
-  }
-  ctx.putImageData(field, plot.x, plot.y);
+  drawColorField(ctx, plot.x, plot.y, plot.w, plot.h, hueForField);
   ctx.strokeStyle = borderColor;
   ctx.lineWidth = 2;
   ctx.strokeRect(plot.x, plot.y, plot.w, plot.h);
@@ -367,12 +440,7 @@ function drawCompareCanvas(a, b, metrics) {
   ctx.textAlign = "left";
   ctx.fillText("上方色盘坐标：X 越右越鲜艳，Y 越下越暗", plot.x, 28);
 
-  for (let x = 0; x < hue.w; x += 1) {
-    const percent = x / (hue.w - 1);
-    const actualHue = (360 - percent * 360) % 360;
-    ctx.fillStyle = rgbToCss(hsvToRgb(actualHue, 1, 1));
-    ctx.fillRect(hue.x + x, hue.y, 1, hue.h);
-  }
+  drawHueBar(ctx, hue.x, hue.y, hue.w, hue.h);
   ctx.strokeStyle = borderColor;
   ctx.strokeRect(hue.x, hue.y, hue.w, hue.h);
   const ahx = hue.x + numeric(a.game_hue_x_pct) / 100 * hue.w;
@@ -518,6 +586,7 @@ els.themeToggle.addEventListener("click", () => {
   document.body.classList.toggle("dark");
   localStorage.setItem("tomodachi-color-guide:theme", document.body.classList.contains("dark") ? "dark" : "light");
   renderCompare();
+  renderInspector();
 });
 
 if (localStorage.getItem("tomodachi-color-guide:theme") === "dark") {
