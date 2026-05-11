@@ -181,7 +181,7 @@ function renderInspector() {
       </div>
     </div>
 
-    <canvas class="position-canvas" id="inspectorCanvas" width="960" height="480" aria-label="${color.code} 游戏色盘位置图"></canvas>
+    <canvas class="position-canvas" id="inspectorCanvas" width="660" height="470" aria-label="${color.code} 游戏色盘位置图"></canvas>
   `;
   const posCanvas = document.getElementById("inspectorCanvas");
   if (posCanvas) drawInspectorCanvas(posCanvas, color);
@@ -343,7 +343,8 @@ function drawColorField(ctx, fx, fy, fw, fh, hue) {
     for (let px = 0; px < fw; px++) {
       const sat = px / (fw - 1);
       const scale = 1 - 0.16 * sat;
-      const val = Math.min(1, (1 - py / (fh - 1)) / scale);
+      const base = Math.min(1, (1 - py / (fh - 1)) / scale);
+      const val = Math.pow(base, 0.82);
       const { r, g, b } = hsvToRgb(hue, sat, val);
       const i = (py * fw + px) * 4;
       imageData.data[i] = r;
