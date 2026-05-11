@@ -181,7 +181,7 @@ function renderInspector() {
       </div>
     </div>
 
-    <canvas class="position-canvas" id="inspectorCanvas" width="660" height="470" aria-label="${color.code} 游戏色盘位置图"></canvas>
+    <canvas class="position-canvas" id="inspectorCanvas" width="576" height="405" aria-label="${color.code} 游戏色盘位置图"></canvas>
   `;
   const posCanvas = document.getElementById("inspectorCanvas");
   if (posCanvas) drawInspectorCanvas(posCanvas, color);
