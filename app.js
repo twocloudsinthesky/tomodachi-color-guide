@@ -344,7 +344,7 @@ function drawColorField(ctx, fx, fy, fw, fh, hue) {
       const sat = px / (fw - 1);
       const scale = 1 - 0.16 * sat;
       const base = Math.min(1, (1 - py / (fh - 1)) / scale);
-      const gamma = 0.45 + 0.35 * sat;
+      const gamma = 0.40 + 0.35 * sat;
       const val = Math.pow(base, gamma);
       const { r, g, b } = hsvToRgb(hue, sat, val);
       const i = (py * fw + px) * 4;
